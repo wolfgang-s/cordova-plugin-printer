@@ -72,11 +72,18 @@
     UIPrintInteractionController* controller = [self printController];
 
     NSString* printerId = [settings objectForKey:@"printerId"];
-
+    NSString* ignore = [settings objectForKey:@"ignore"];
+    
     [self adjustPrintController:controller withSettings:settings];
     [self loadContent:content intoPrintController:controller];
 
-    if (printerId) {
+    if(ignore) {
+        CDVPluginResult* pluginResult =
+        [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        
+        [self.commandDelegate sendPluginResult:pluginResult
+                                    callbackId:_callbackId];
+    } else if (printerId) {
         [self sendToPrinter:controller printer:printerId];
     }
     else {
